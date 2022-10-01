@@ -1,0 +1,20 @@
+
+window:
+  opacity: 0.8
+  padding:
+    x: 15
+    y: 15
+    
+font:
+  size: 4
+  normal:
+    family: Hack Nerd Font
+
+colors:
+  background: '0xff0000'
+  foreground: '0xff0000'
+  # background: '0x1a1b26'
+  # foreground: '0xa9b1d6'
+
+key_bindings:
+  - { key: Insert, chars: "" }

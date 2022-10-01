@@ -15,7 +15,6 @@ function fish_greeting
 end
 
 if status is-interactive
-    # Commands to run in interactive sessions can go here
     set -gx PATH $HOME/tools $PATH
     set -gx PATH /home/bmiq/.local/bin $PATH
     alias v="nvim"
@@ -30,7 +29,7 @@ if status is-interactive
     alias prompt="rofi -show run"
     alias zap="firefox 'https://web.whatsapp.com/' &"
     alias sv="sudo v"
-    alias c_alacritty="v ~/.config/alacritty.yml"
+    alias c_alacritty="v ~/.config/alacritty/alacritty.yml"
     alias c_picom="v ~/.picom.conf"
     alias c_bspwm="v ~/.config/bspwm/bspwmrc"
     alias rgf="rg --files | rg"
