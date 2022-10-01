@@ -21,6 +21,7 @@ if status is-interactive
     alias cls="clear"
     alias emoji_fish="echo ' '"
     alias c_fish="v ~/.config/fish/config.fish"
+    alias c_nvim="v ~/.config/nvim/init.vim"
     alias c_kitty="v ~/.config/kitty/kitty.conf"
     alias c_poly="v ~/.config/polybar/config.ini"
     alias s_bright="xrandr --output DP-3 --brightness 1 --output HDMI-0 --brightness 1"

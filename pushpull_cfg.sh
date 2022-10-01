@@ -14,7 +14,10 @@ cp ~/.config/bspwm/bspwmrc		        bspwm/bspwmrc
 mkdir -p picom
 cp ~/.config/picom/picom.conf		    picom/picom.conf
 mkdir -p sxhkd
-cp ~/.config/sxhkd/sxhkdrc		    sxhkd/sxhkdrc
+cp ~/.config/sxhkd/sxhkdrc		        sxhkd/sxhkdrc
+mkdir -p nvim
+cp ~/.config/nvim/init.vim		        nvim/init.vim
+
 
 cp -rv ./* ~/.config
 echo 'DONE'

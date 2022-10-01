@@ -1,0 +1,64 @@
+loadkeys br-abnt2
+timedatectl set-ntp true
+fdisk /dev/sda
+mkfs.fat -F32 /dev/sda1
+mkfs.ext4 /dev/sda3
+mount /dev/sda3 /mnt
+pacstrap /mnt base linux linux-firmware
+genfstab -U /mnt >> /mnt/etc/fstab
+arch-chroot /mnt (root@archiso -> [root@archiso /])
+ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localltime
+hwclock --systohc
+vi /etc/locale.gen (EDIT locale pt_BR.UTF-8)
+locale-gen
+echo 'arch' > /etc/hostname
+vi /etc/hosts
+    127.0.0.1   localhost
+    ::1         localhost
+    127.0.0.1   arch.localdomain arch
+passwd (type)
+useradd -m miq
+passwd miq (type)
+usermod -aG wheel,audio,video,optical,storage miq
+pacman -S sudo
+visudo (# %wheel ALL=(ALL) ALL)
+pacman -S grub
+pacman -S efibootmgr dosfstools os-prober mtools
+mkdir /boot/EFI
+mount /dev/sda1 /boot/EFI
+grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck
+grub-mkconfig -o /boot/grub/grub.cfg
+pacman -S networkmanager
+systemctl enable NetworkManager (systemctl status dhcpcd)
+umount -R /mnt (-l)
+reboot
+-----
+<login>
+<ping>
+sudo pacman -S xorg xorg-xinit nvidia nvidia-utils (xf86-video-qxl vmbox)
+sudo pacman -S nvim git htop neofetch firefox xclip ripgrep dust
+sudo pacman -S bspwm sxhkd rofi feh picom alacritty polybar
+mkdir .config/bspwm
+mkdir .config/sxhkd
+cp /usr/share/doc/bspwm/examples/bspwmrc .config/bspwm/
+cp /usr/share/doc/bspwm/examples/sxhkd .config/sxhkd/
+nvim .config/sxhkd/sxhkdrc (change urxvt -> alacritty) (change dmenu_run -> rofi -show run)
+cp /etc/X11/xxinit/xinitrc .xinitrc
+nvim .xinitrc
+    <EOF, del ^twm.*$>
+    setxkbmap -model abnt2 -layout br -variant nodeadkeys &
+    pulse audio: pactl set-default-sink 'alsa_output.usb-Kingston_HyperX_Cloud_Revolver_S_000000000000-00.analog-stereo' &
+    <picom stuff> &
+    exec bspwm
+sudo vim /etc/xdg/picom.conf
+    </ vsync -> comment>
+startx
+<super+enter> (open terminal)
+<super+space> (type arndr) <output> <virtual> <fix resolution> <save> <display.screenlayout>
+chmod +x .screenlayout/display.sh
+vim .xinitrc
+<add> $HOME/.screenlayout/display.sh &
+mod+alt+q (back console)
+startx
+<edit .xinitrc, before picom> (xsetroot -cursor_name left_ptr)
+firefox
