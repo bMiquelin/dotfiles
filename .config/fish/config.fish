@@ -1,0 +1,1 @@
+/home/bmiq/.config/fish/config.fish
