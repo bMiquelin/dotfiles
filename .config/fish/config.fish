@@ -8,8 +8,6 @@ function fish_prompt
     set_color purple
     set MY_PWD pwd
     set MY_PWD string replace $HOME '~' ($MY_PWD)
-    # set MY_PWD string replace '/' ' ' ($MY_PWD)
-    # echo (whoami)'@'($MY_PWD)(set_color blue)' '(set_color normal)
     echo (set_color blue)'fish' (set_color 7134eb)($MY_PWD)(set_color 34a8eb) ' '(set_color normal)
 end
 
