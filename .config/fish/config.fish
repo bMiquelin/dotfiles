@@ -29,7 +29,6 @@ if status is-interactive
     alias s_bright="xrandr --output DP-3 --brightness 1 --output HDMI-0 --brightness 1"
     alias s_dark="xrandr --output DP-3 --brightness 0.5 --output HDMI-0 --brightness 0.5"
     alias r_poly=".config/polybar/launch.sh"
-#    alias rdp="rdesktop -d RADIXENGRJ -u bruno.miquelin -p Rdx@22123 -e -r sound 192.168.1.8"
     alias prompt="rofi -show run"
     alias zap="firefox 'https://web.whatsapp.com/' &"
     alias sv="sudo v"
