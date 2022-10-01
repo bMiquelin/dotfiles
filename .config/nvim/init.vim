@@ -7,3 +7,5 @@ Plug 'folke/tokyonight.nvim',   { 'branch': 'main' }
 Plug 'preservim/nerdtree'
 
 call plug#end()
+
+colorscheme tokyonight-night

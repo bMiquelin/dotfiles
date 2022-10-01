@@ -18,3 +18,4 @@ bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
 bspc rule -a Thundar state=floating
 bspc rule -a rdesktop desktop='^4' state=fullscreen
+bspc rule -a PokeXGames desktop='^4' state=fullscreen
