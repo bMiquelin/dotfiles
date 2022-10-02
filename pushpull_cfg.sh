@@ -16,7 +16,7 @@ cp ~/.config/picom/picom.conf		    picom/picom.conf
 mkdir -p sxhkd
 cp ~/.config/sxhkd/sxhkdrc		        sxhkd/sxhkdrc
 mkdir -p nvim
-cp ~/.config/nvim/init.vim		        nvim/init.vim
+cp ~/.config/nvim/init.lua		        nvim/init.lua
 mkdir -p dunst
 cp ~/.config/dunst/dunstrc              dunst/dunstrc
 
