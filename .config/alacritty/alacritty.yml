@@ -8,7 +8,11 @@ window:
 font:
   size: 4
   normal:
-    family: Hack Nerd Font
+    family: 'Hack Regular'
+  bold:
+    family: 'Hack Regular'
+  italic:
+    family: 'Hack Regular'
 
 key_bindings:
   - { key: Insert, chars: "" }

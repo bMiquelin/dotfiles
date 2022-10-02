@@ -1,6 +1,6 @@
 if status is-login
     if test -z "$DISPLAY" -a "$XDG_VTNR" = 1
-        exec startx -- -keeptty
+        #exec startx -- -keeptty
     end
 end
 
@@ -21,9 +21,11 @@ if status is-interactive
     alias cls="clear"
     alias emoji_fish="echo ' '"
     alias c_fish="v ~/.config/fish/config.fish"
+    alias c_dunst="v ~/.config/dunst/dunstrc"
     alias c_nvim="v ~/.config/nvim/init.vim"
     alias c_kitty="v ~/.config/kitty/kitty.conf"
     alias c_poly="v ~/.config/polybar/config.ini"
+    alias c_sxhkd="v ~/.config/sxhkd/sxhkdrc"
     alias s_bright="xrandr --output DP-3 --brightness 1 --output HDMI-0 --brightness 1"
     alias s_dark="xrandr --output DP-3 --brightness 0.5 --output HDMI-0 --brightness 0.5"
     alias r_poly=".config/polybar/launch.sh"

@@ -10,18 +10,32 @@ super + r
 alt + Tab
 	rofi -show window
 
-control + Tab
+control + alt + Tab
 	bspc node -f next.local.!hidden.window
 
-# ctrl + ç
-#	rofi -show run
 
 Print
 	flameshot gui
 
+super + Print
+	peek
+
 # Reload sxhkdrc
 super + shift + r
     pkill -usr1 -x sxhkd; notify-send 'sxhkd' 'Reloaded config'
+
+# Reload all
+super + alt + control + r
+	pkill -usr1 -x sxhkd; \
+	bspc wm -r; \
+	killall dunst; \
+	dunst &; \
+	pushpull_cfg.sh; \
+	notify-send 'Reloaded all'
+
+# Pull config
+super + alt + control + p
+	pull_cfg.sh; notify-send 'Pull config'
 
 # wm independent hotkeys
 #

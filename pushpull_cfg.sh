@@ -17,7 +17,9 @@ mkdir -p sxhkd
 cp ~/.config/sxhkd/sxhkdrc		        sxhkd/sxhkdrc
 mkdir -p nvim
 cp ~/.config/nvim/init.vim		        nvim/init.vim
+mkdir -p dunst
+cp ~/.config/dunst/dunstrc              dunst/dunstrc
 
 
 cp -rv ./* ~/.config
-echo 'DONE'
+notify-send 'DONE'

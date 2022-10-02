@@ -2,7 +2,7 @@ pacman -S \
     xclip ripgrep neofetch \
     cmatrix dust dmenu sxhkd \
     picom polybar fish thunar \
-    curl
+    curl dunst
 
 
 # --- dotfiles & git ---
