@@ -2,7 +2,9 @@ pacman -S \
     xclip ripgrep neofetch \
     cmatrix dust dmenu sxhkd \
     picom polybar fish thunar \
-    curl dunst
+    curl dunst dotnet-sdk \
+    exa ya remmina freerdp \
+    base-devel
 
 
 # --- dotfiles & git ---
@@ -17,9 +19,12 @@ git config --global credential.helper store
 chmod +x ./pull_cfg.sh
 sh ./pull_cfg.sh
 
-# -- neovim ##
+# --- neovim --- ##
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+# --- fish as default shell --- #
+# chsh -s $(which fish)
 
 
 
