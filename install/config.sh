@@ -1,10 +1,28 @@
+#!/bin/bash
+
+# -- base pkgs --
+pacman -S sudo grub efibootmgr \
+    dosfstools os-prober mtools \
+    networkmanager \
+    xorg xorg-xinit nvidia nvidia-utils \
+    nvim git htop firefox \
+    bspwm sxhkd rofi feh picom alacritty polybar
+
+sudo pacman -Syu
+
+# -- advanced pkgs --
 pacman -S \
     xclip ripgrep neofetch \
     cmatrix dust dmenu sxhkd \
     picom polybar fish thunar \
     curl dunst dotnet-sdk \
     exa ya remmina freerdp \
-    base-devel
+    base-devel lolcat flameshot \
+    bat arandr qjackctl \
+		discord
+
+# -- audio --
+# pavucontrol ncpamixer pipeware-media-session pipewire pipewire-jack pipewire-alsa pipewire-pulse pipewire-media-session wireplumber  alsa-plugins
 
 
 # --- dotfiles & git ---
@@ -26,7 +44,8 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
 # --- fish as default shell --- #
 # chsh -s $(which fish)
 
-
+# -- FIX NVidia Tearing --
+# nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }"
 
 
 
