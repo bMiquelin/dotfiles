@@ -48,16 +48,28 @@ setup_fun_tools() {
 }
 
 setup_dev_tools() { 
+    # Install tool pkg
     install_package git docker rust visual-studio-code-bin wapiti yarn npm python-pip
+
+    # cfg vs-code
     code --install-extension catppuccin.catppuccin-vsc catppuccin.catppuccin-vsc-icons eamodio.gitlens ms-dotnettools.csdevkit
+    
+    # cfg dotnet
     wget https://dot.net/v1/dotnet-install.sh -O ~/tmp/dotnet-install.sh
     chmod +x ~/tmp/dotnet-install.sh
     ~/tmp/dotnet-install.sh --channel 9.0
+
+    # cfg git
+    git clone https://github.com/bMiquelin/dotfiles
+    git config --global user.email "bruno.b.miquelin@gmail.com"
+    git config --global user.name (whoami)
+    git config --global credential.helper store   
+    ssh-keygen -t ed25519 -C "bruno.b.miquelin@gmail.com"   
     echo "✅ Dev installed"
 }
 
 setup_admin_tools() { 
-    install_package bat btop cmake dust eza gdu htop jq neovim nano ripgrep unzip wget zsh ffmpeg lsof p7zip unrar imagemagick
+    install_package bat btop cmake dust eza gdu htop jq neovim nano ripgrep unzip wget zsh ffmpeg lsof p7zip unrar imagemagick inotify-tools
     curl -sS https://starship.rs/install.sh | sh
     echo "✅ Fun installed"
 }
@@ -67,10 +79,12 @@ setup_user_tools() {
     echo "✅ Tools installed"
 }
 
-setup_pwd_script() { 
-    prompt_setup "Setup zsh?" "setup_zsh"
+setup_bin() { 
     ln -sf $DOTFILES/bin/pass.sh ~/.local/bin/pass
-    echo "✅ Password script OK, get encrypted file"
+    chmod +x $DOTFILES/bin/pass.sh.sh
+    ln -sf $DOTFILES/bin/watch_cfg.sh ~/.local/bin/watch_cfg
+    chmod +x $DOTFILES/bin/watch_cfg.sh    
+    echo "✅ Script OK, get encrypted pass file"
 }
 
 setup_zsh() { 
@@ -160,7 +174,7 @@ prompt_setup "Setup fun tools?" "setup_fun_tools"
 prompt_setup "Setup dev tools?" "setup_dev_tools"
 prompt_setup "Setup admin tools?" "setup_admin_tools"
 prompt_setup "Setup user ools?" "setup_user_tools"
-prompt_setup "Setup pwd script?" "setup_pwd_script"
+prompt_setup "Setup bin?" "setup_bin"
 prompt_setup "Setup zsh?" "setup_zsh"
 prompt_setup "Setup fonts?" "setup_fonts"
 prompt_setup "Setup lvim?" "setup_lvim"
