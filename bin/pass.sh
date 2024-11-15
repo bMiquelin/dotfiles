@@ -1,0 +1,1 @@
+/home/miq/.local/bin/pass

@@ -1,0 +1,16 @@
+[Desktop Entry]
+DefaultProfile=zsh.profile
+
+[FileDialogSize]
+2 screens: Height=720
+2 screens: Width=1720
+
+[General]
+ConfigVersion=1
+
+[MainWindow]
+MenuBar=Enabled
+ToolBarsMovable=Disabled
+
+[UiSettings]
+ColorScheme=
