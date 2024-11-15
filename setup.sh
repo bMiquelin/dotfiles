@@ -69,14 +69,14 @@ setup_user_tools() {
 
 setup_pwd_script() { 
     prompt_setup "Setup zsh?" "setup_zsh"
-    ln -sf ~/.local/bin/pass $DOTFILES/bin/pass.sh
+    ln -sf $DOTFILES/bin/pass.sh ~/.local/bin/pass
     echo "✅ Password script OK, get encrypted file"
 }
 
 setup_zsh() { 
     install_package zsh
     chsh -s $(which zsh)
-    ln -sf ~/.zshrc $DOTFILES/zsh/.zshrc
+    ln -sf $DOTFILES/zsh/.zshrc ~/.zshrc
     source ~/.zshrc
     echo "✅ Zsh installed"
 }
@@ -90,14 +90,14 @@ setup_fonts() {
     wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.zip -O $font_dir
     unzip $font_dir '*.ttf' ~/.local/share/fonts/
     rm $font_dir
-    ln -sf /etc/fonts/local.conf $DOTFILES/fonts/local.conf
+    sudo cp $DOTFILES/fonts/local.conf /etc/fonts/local.conf
     fc-cache -f -v
     echo "✅ Hack fonts installed"
 }
 
 setup_lvim() { 
     LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)
-    ln -sf ~/.config/lvim/config.lua $DOTFILES/lvim/config.lua
+    ln -sf $DOTFILES/lvim/config.lua ~/.config/lvim/config.lua
 }
 
 setup_kde_theming() { 
@@ -119,10 +119,15 @@ setup_kde_theming() {
     echo "Window Decorations -> Pick Scratchy"
 }
 
+setup_i3() {
+    ln -sf $DOTFILES/i3/config ~/.config/i3/config
+    echo "✅ i3 installed"
+}
+
 setup_konsole() { 
     cd ~/.local/share/konsole && wget https://raw.githubusercontent.com/catppuccin/konsole/refs/heads/main/themes/catppuccin-mocha.colorscheme
-    ln -sf ~/.config/konsolerc $DOTFILES/konsole/konsolerc
-    ln -sf ~/.local/share/konsole/zsh.profile $DOTFILES/konsole/zsh.profile
+    ln -sf $DOTFILES/konsole/konsolerc ~/.config/konsolerc
+    ln -sf $DOTFILES/konsole/zsh.profile ~/.local/share/konsole/zsh.profile
     echo "✅ Konsole installed"
 }
 
@@ -160,6 +165,7 @@ prompt_setup "Setup zsh?" "setup_zsh"
 prompt_setup "Setup fonts?" "setup_fonts"
 prompt_setup "Setup lvim?" "setup_lvim"
 prompt_setup "Setup kde theming?" "setup_kde_theming"
+prompt_setup "Setup i3?" "setup_i3"
 prompt_setup "Setup konsole?" "setup_konsole"
 prompt_setup "Setup camera?" "setup_camera"
 prompt_setup "Setup keyboard?" "setup_keyboard"
