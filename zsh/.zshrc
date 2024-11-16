@@ -17,7 +17,8 @@ export EDITOR='lvim'
 export VISUAL='lvim'
 export DOTFILES=$HOME/dotfiles
 
-
+alias backup='sudo timeshift --create --tags D'
+alias i3c='lvim $DOTFILES/i3/config'
 alias l='eza -al --group-directories-first'
 alias ll='eza -al --group-directories-first'
 alias ..='cdls ..'

@@ -6,6 +6,8 @@ mkdir -p ~/src
 mkdir -p ~/tmp
 mkdir -p ~/assets
 
+DOTFILES=~/dotfiles
+
 if [ -z "$DOTFILES" ]; then
     echo "Error: DOTFILES variable is not set."
     exit 1
@@ -13,9 +15,9 @@ fi
 
 install_package() {
     if command -v yay &> /dev/null; then
-        yay -S --needed $1
+        yay -S --needed $@
     else
-        sudo pacman -S --needed $1
+        sudo pacman -S --needed $@
     fi
 }
 
@@ -49,7 +51,7 @@ setup_fun_tools() {
 
 setup_dev_tools() { 
     # Install tool pkg
-    install_package git docker rust visual-studio-code-bin wapiti yarn npm python-pip
+    install_package git docker rust visual-studio-code-bin wapiti yarn npm python-pip openssh
 
     # cfg vs-code
     code --install-extension catppuccin.catppuccin-vsc catppuccin.catppuccin-vsc-icons eamodio.gitlens ms-dotnettools.csdevkit
@@ -60,7 +62,7 @@ setup_dev_tools() {
     ~/tmp/dotnet-install.sh --channel 9.0
 
     # cfg git
-    git clone https://github.com/bMiquelin/dotfiles
+    # git clone https://github.com/bMiquelin/dotfiles
     git config --global user.email "bruno.b.miquelin@gmail.com"
     git config --global user.name (whoami)
     git config --global credential.helper store   
@@ -80,8 +82,9 @@ setup_user_tools() {
 }
 
 setup_bin() { 
+    mkdir -p ~/.local/bin/pass
     ln -sf $DOTFILES/bin/pass.sh ~/.local/bin/pass
-    chmod +x $DOTFILES/bin/pass.sh.sh
+    chmod +x $DOTFILES/bin/pass.sh
     ln -sf $DOTFILES/bin/watch_cfg.sh ~/.local/bin/watch_cfg
     chmod +x $DOTFILES/bin/watch_cfg.sh    
     echo "✅ Script OK, get encrypted pass file"
@@ -102,14 +105,15 @@ setup_fonts() {
     install_package noto-fonts-cjk
     font_dir=~/tmp/Hack.zip
     wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.zip -O $font_dir
-    unzip $font_dir '*.ttf' ~/.local/share/fonts/
+    unzip $font_dir '*.ttf' -d ~/.local/share/fonts/
     rm $font_dir
     sudo cp $DOTFILES/fonts/local.conf /etc/fonts/local.conf
     fc-cache -f -v
     echo "✅ Hack fonts installed"
 }
 
-setup_lvim() { 
+setup_lvim() {
+    #install_package python-nvim
     LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)
     ln -sf $DOTFILES/lvim/config.lua ~/.config/lvim/config.lua
 }
@@ -134,6 +138,8 @@ setup_kde_theming() {
 }
 
 setup_i3() {
+    install_package i3 dmenu polybar picom alacritty dunst feh
+    mkdir -p ~/.config/i3
     ln -sf $DOTFILES/i3/config ~/.config/i3/config
     echo "✅ i3 installed"
 }
