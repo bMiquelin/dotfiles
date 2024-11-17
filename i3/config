@@ -34,7 +34,7 @@ bindsym $mod+w exec chromium
 bindsym $mod+d exec rofi -show run
 bindsym $mod+r exec --no-startup-id i3-dmenu-desktop
 
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec i3-sensible-terminal
 bindsym Mod1+Return fullscreen toggle
 
 bindsym $mod+Shift+q kill

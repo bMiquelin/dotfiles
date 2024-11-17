@@ -1,0 +1,9 @@
+# TODO List
+
+- [X] setup.sh to work as .sh instead of .zshrc
+- [X] setup.sh must be a dynamic menu
+- [ ] Install and configure picom
+- [ ] Set up notify-send for notifications
+- [ ] Integrate dmenu for application launching
+- [ ] Configure xrandr for display settings
+- [ ] Configure menu to run and check what has already been done

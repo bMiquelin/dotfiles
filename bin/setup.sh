@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 mkdir -p $HOME/g
 mkdir -p $HOME/p
 mkdir -p $HOME/dev
@@ -12,6 +12,59 @@ if [ -z "$DOTFILES" ]; then
     echo "Error: DOTFILES variable is not set."
     exit 1
 fi
+
+options=(
+    "Setup yay|is_installed yay|setup_yay"
+    "Setup bin scripts|check_setup_bin|setup_bin"
+    "Setup fun tools|is_installed asciiquarium lolcat neofetch nsnake cmatrix fortune cowsay|install_package asciiquarium lolcat neofetch nsnake cmatrix fortune-mod cowsay"
+    "Setup dev tools|is_installed git code wapiti yarn npm|setup_dev_tools"
+    "Setup admin tools|is_installed bat btop cmake dust eza gdu htop jq nvim nano rg unzip wget zsh ffmpeg lsof 7z unrar convert inotifywait|bat btop cmake dust eza gdu htop jq neovim nano ripgrep unzip wget zsh ffmpeg lsof p7zip unrar imagemagick inotify-tools"
+    "Setup starship|is_installed starship|curl -sS https://starship.rs/install.sh | sh"
+    "Setup user tools|is_installed discord pavucontrol remmina qbittorrent steam via vlc chromium miru mpv|install_packages discord pavucontrol remmina qbittorrent steam via-bin vlc chromium miru-bin mpv"
+    "Setup fonts|is_fonts_ok|setup_fonts"
+    "Setup lvim|is_installed lvim|setup_lvim"
+    "Setup i3|is_installed i3|setup_i3"
+    "Setup GTK theme catppuccin-mocha|symlink_exists $HOME/.config/gtk-3.0/settings.ini|setup_gtk"
+    "Setup picom|symlink_exists $HOME/.config/picom.conf|setup_picom"
+    "Setup alacritty|symlink_exists $HOME/.config/alacritty/alacritty.toml|setup_alacritty"
+    "Setup polybar|symlink_exists $HOME/.config/polybar/config.ini|setup_polybar"
+    "Setup feh|is_feh_ok|setup_feh"
+    "Setup zsh|symlink_exists $HOME/.zshrc|setup_zsh"
+    "Setup camera|is_installed v4l2loopback-dkms|setup_camera"
+    "Setup keyboard|is_keyboard_ok|setup_keyboard"
+)
+if [[ "$XDG_CURRENT_DESKTOP" == "KDE" || "$XDG_CURRENT_DESKTOP" == "Plasma" ]]; then
+    options+=("Setup kde theming|is_kde_theming_ok|setup_kde_theming")
+    options+=("Setup autologin|is_installed sddm|setup_sddm_autologin")
+    options+=("Setup konsole|symlink_exists $HOME/.config/konsolerc|setup_konsole")
+else
+    options+=("Setup i3|is_installed i3|setup_i3")
+fi
+
+menu() {
+    echo "Choose an option:"
+    for i in "${!options[@]}"; do
+        label=$(echo "${options[$i]}" | cut -d'|' -f1)
+        check_func=$(echo "${options[$i]}" | cut -d'|' -f2)
+        action_func=$(echo "${options[$i]}" | cut -d'|' -f3-)
+        
+        if [[ $($check_func) -eq 1 ]]; then
+            status="[X]"
+        else
+            status="[ ]"
+        fi
+        
+        echo "$i) $status $label"
+    done
+    read -r choice
+    if [[ ! "$choice" =~ ^[0-9]+$ ]] || [ "$choice" -lt 1 ] || [ "$choice" -gt "${#options[@]}" ]; then
+        echo "Invalid choice. Please select a valid number between 1 and ${#options[@]}."
+        return
+    fi
+    eval "${options[$choice]##*|}"
+}
+
+menu
 
 install_package() {
     if command -v yay &> /dev/null; then
@@ -30,7 +83,6 @@ setup_yay() {
 }
 
 setup_sddm_autologin() {
-
     current_user=$(whoami)
     sudo tee -a $HOME/tmp/sddm.conf > /dev/null <<EOL
 [Autologin]
@@ -44,57 +96,46 @@ EOL
     echo "✅ SDDM Autologin installed"
 }
 
-setup_fun_tools() { 
-    install_package asciiquarium lolcat neofetch nsnake cmatrix fortune-mod cowsay
-    echo "✅ Fun installed"
-}
-
 setup_dev_tools() { 
-    # Install tool pkg
     install_package git docker rust visual-studio-code-bin wapiti yarn npm python-pip openssh
-
-    # cfg vs-code
     code --install-extension catppuccin.catppuccin-vsc catppuccin.catppuccin-vsc-icons eamodio.gitlens ms-dotnettools.csdevkit GitHub.copilot shakram02.bash-beautify
-    
-    # cfg dotnet
     wget https://dot.net/v1/dotnet-install.sh -O $HOME/tmp/dotnet-install.sh
     chmod +x $HOME/tmp/dotnet-install.sh
     $HOME/tmp/dotnet-install.sh --channel 9.0
-
-    # cfg git
-    # git clone https://github.com/bMiquelin/dotfiles
     git config --global user.email "bruno.b.miquelin@gmail.com"
-    git config --global user.name (whoami)
+    git config --global user.name $(whoami)
     git config --global credential.helper store   
     ssh-keygen -t ed25519 -C "bruno.b.miquelin@gmail.com"   
     echo "✅ Dev installed"
 }
 
-setup_admin_tools() { 
-    install_package bat btop cmake dust eza gdu htop jq neovim nano ripgrep unzip wget zsh ffmpeg lsof p7zip unrar imagemagick inotify-tools
-    curl -sS https://starship.rs/install.sh | sh
-    echo "✅ Fun installed"
-}
-
-setup_user_tools() { 
-    install_package discord pavucontrol remmina qbittorrent steam via-bin vlc chromium miru-bin spectacle mpv
-    echo "✅ Tools installed"
+check_setup_bin() {
+    for script in $DOTFILES/bin/*.sh; do
+        script_name=$(basename "$script" .sh)
+        if [ ! -f "$HOME/.local/bin/$script_name" ]; then
+            echo 0
+            return
+        fi
+    done
+    echo 1
 }
 
 setup_bin() { 
     for script in $DOTFILES/bin/*.sh; do
         script_name=$(basename "$script" .sh)
-        ln -sf "$script" $HOME/.local/bin/"$script_name"
-        chmod +x "$script"
-        echo "$script_name mapped to $HOME/.local/bin"
+        if [ ! -f "$HOME/.local/bin/$script_name" ]; then
+            ln -sf "$script" $HOME/.local/bin/"$script_name"
+            chmod +x "$script"
+            echo "✅ $script_name mapped to $HOME/.local/bin"
+        fi
     done
-    echo "✅ Script from dotfiles/bin linked to $HOME/.local/bin"
 }
 
 setup_zsh() { 
     install_package zsh
     chsh -s $(which zsh)
     ln -sf $DOTFILES/zsh/.zshrc $HOME/.zshrc
+    zsh
     source $HOME/.zshrc
     echo "✅ Zsh installed"
 }
@@ -113,10 +154,25 @@ setup_fonts() {
     echo "✅ Hack fonts installed"
 }
 
+is_fonts_ok() {
+    if ls $HOME/.local/share/fonts/Hack* 1> /dev/null 2>&1; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
 setup_lvim() {
-    #install_package python-nvim
     LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)
     ln -sf $DOTFILES/lvim/config.lua $HOME/.config/lvim/config.lua
+}
+
+is_kde_theming_ok() {
+    if [ -f "$HOME/.local/share/konsole/catppuccin-mocha.colorscheme" ]; then
+        echo 1
+    else
+        echo 0
+    fi
 }
 
 setup_kde_theming() { 
@@ -128,7 +184,7 @@ setup_kde_theming() {
 
     # Konsole Theme
     cd $HOME/.local/share/konsole && wget https://raw.githubusercontent.com/catppuccin/konsole/refs/heads/main/themes/catppuccin-mocha.colorscheme
-
+    
     # Icon Theme
     cd $HOME/.local/share/icons
     git clone https://github.com/m4thewz/dracula-icons
@@ -160,9 +216,22 @@ setup_polybar() {
     echo "✅ Polybar installed"
 }
 
+is_feh_ok() {
+    if command -v feh &>/dev/null && grep -q '^feh' $HOME/.xinitrc; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
 setup_feh() {
     install_package feh
-    feh --bg-fill $DOTFILES/wallpaper/wallpaper1.jpg
+    wallpaper_cmd="feh --bg-fill $DOTFILES/wallpaper/wallpaper1.jpg"
+    $wallpaper_cmd
+    if ! grep -Fxq "$wallpaper_cmd" $HOME/.xinitrc; then
+        sed -i "\$i $wallpaper_cmd" $HOME/.xinitrc
+        echo "Wallpaper command added to .xinitrc"
+    fi
     echo "✅ Feh installed"
 }
 
@@ -177,13 +246,6 @@ setup_i3() {
     install_package i3 dmenu dunst thunar
     mkdir -p $HOME/.config/i3
     ln -sf $DOTFILES/i3/config $HOME/.config/i3/config
-    
-    setup_picom
-    setup_alacritty
-    setup_polybar
-    setup_feh
-
-    echo "✅ i3 installed"
 }
 
 setup_konsole() { 
@@ -202,44 +264,46 @@ setup_camera() {
     echo "✅ Camera installed"
 }
 
+is_keyboard_ok() {
+    if grep -q 'dead_diaeresis' /usr/share/X11/xkb/symbols/us; then
+        echo 0
+    else
+        echo 1
+    fi
+}
+
 setup_keyboard() { 
     echo "Fixing xkb symbols file to remove dead_diaeresis from us-intl"
     file="/usr/share/X11/xkb/symbols/us"
     line_number=129
     new_line='key <AC11> { [ dead_acute, quotedbl, apostrophe ] };'
     current_line=$(sed -n "${line_number}p" "$file")
-
-    # If the current line doesn't match the desired one, update it
     if [[ "$current_line" != "$new_line" ]]; then
         sudo sed -i "${line_number}s/.*/$new_line/" "$file"
         echo "Line $line_number updated successfully."
-            else
+    else
         echo "Line $line_number is already correct."
     fi
-
     setxkbmap -layout us -variant intl -option
 }
 
-
-prompt_setup() {
-    local prompt_message=$1
-    local setup_command=$2
-    echo "$prompt_message (y/n):"
-    read -r x && [[ "$x" =~ ^[Yy]$ ]] && eval "$setup_command"
+is_installed() {
+    for pkg in "$@"; do
+        if ! command -v "$pkg" &>/dev/null; then
+            echo 0
+            return
+        fi
+    done
+    echo 1
 }
 
-prompt_setup "Setup yay?" "setup yay"
-prompt_setup "Setup sddm autologin?" "setup_sddm_autologin"
-prompt_setup "Setup fun tools?" "setup_fun_tools"
-prompt_setup "Setup dev tools?" "setup_dev_tools"
-prompt_setup "Setup admin tools?" "setup_admin_tools"
-prompt_setup "Setup user ools?" "setup_user_tools"
-prompt_setup "Setup bin?" "setup_bin"
-prompt_setup "Setup zsh?" "setup_zsh"
-prompt_setup "Setup fonts?" "setup_fonts"
-prompt_setup "Setup lvim?" "setup_lvim"
-prompt_setup "Setup kde theming?" "setup_kde_theming"
-prompt_setup "Setup i3?" "setup_i3"
-prompt_setup "Setup konsole?" "setup_konsole"
-prompt_setup "Setup camera?" "setup_camera"
-prompt_setup "Setup keyboard?" "setup_keyboard"
+symlink_exists() {
+    for path in "$@"; do
+        if [ -L "$path" ] && [ -e "$path" ]; then
+            echo 1
+        else
+            echo 0
+            return
+        fi
+    done
+}

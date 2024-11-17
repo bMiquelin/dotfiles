@@ -43,6 +43,7 @@ alias cdls='function _cdls() { cd "$1" && ll }; _cdls'
 alias mkcd='function _mkcd() { mkdir -p "$1" && cd "$1"; }; _mkcd'
 alias reload='source ~/.zshrc'
 alias zshrc='lvim ~/.zshrc'
+alias codedot='code $DOTFILES'
 alias home='cd $home && eza -l'
 bindkey  "^[[H"   beginning-of-line
 bindkey  "^[[F"   end-of-line
