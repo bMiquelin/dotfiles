@@ -16,7 +16,8 @@ export path
 export EDITOR='lvim'
 export VISUAL='lvim'
 export DOTFILES=$HOME/dotfiles
-
+export WIN=/mnt/windows
+export WINBAK=/mnt/windows/bak
 
 alias lastss="ls -d ~/Pictures/Screenshots/* -Art | tail -n 1"
 alias editss="gimp (ls -d ~/Pictures/Screenshots/* -Art | tail -n 1) &"

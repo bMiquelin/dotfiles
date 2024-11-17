@@ -14,35 +14,38 @@ if [ -z "$DOTFILES" ]; then
 fi
 
 options=(
-    "Setup yay|is_installed yay|setup_yay"
-    "Setup bin scripts|check_setup_bin|setup_bin"
-    "Setup fun tools|is_installed asciiquarium lolcat neofetch nsnake cmatrix fortune cowsay|install_package asciiquarium lolcat neofetch nsnake cmatrix fortune-mod cowsay"
-    "Setup dev tools|is_installed git code wapiti yarn npm|setup_dev_tools"
-    "Setup admin tools|is_installed bat btop cmake dust eza gdu htop jq nvim nano rg unzip wget zsh ffmpeg lsof 7z unrar convert inotifywait|bat btop cmake dust eza gdu htop jq neovim nano ripgrep unzip wget zsh ffmpeg lsof p7zip unrar imagemagick inotify-tools"
-    "Setup starship|is_installed starship|curl -sS https://starship.rs/install.sh | sh"
-    "Setup user tools|is_installed discord pavucontrol remmina qbittorrent steam via vlc chromium miru mpv|install_packages discord pavucontrol remmina qbittorrent steam via-bin vlc chromium miru-bin mpv"
-    "Setup fonts|is_fonts_ok|setup_fonts"
-    "Setup lvim|is_installed lvim|setup_lvim"
-    "Setup i3|is_installed i3|setup_i3"
-    "Setup GTK theme catppuccin-mocha|symlink_exists $HOME/.config/gtk-3.0/settings.ini|setup_gtk"
-    "Setup picom|symlink_exists $HOME/.config/picom.conf|setup_picom"
-    "Setup alacritty|symlink_exists $HOME/.config/alacritty/alacritty.toml|setup_alacritty"
-    "Setup polybar|symlink_exists $HOME/.config/polybar/config.ini|setup_polybar"
-    "Setup feh|is_feh_ok|setup_feh"
-    "Setup zsh|symlink_exists $HOME/.zshrc|setup_zsh"
-    "Setup camera|is_installed v4l2loopback-dkms|setup_camera"
-    "Setup keyboard|is_keyboard_ok|setup_keyboard"
+    "AUR Helper (yay)|is_installed yay|setup_yay"
+    "Custom Scripts|check_setup_bin|setup_bin"
+    "Fun Tools|is_installed asciiquarium lolcat neofetch nsnake cmatrix fortune cowsay|install_package asciiquarium lolcat neofetch nsnake cmatrix fortune-mod cowsay"
+    "Development Tools|is_installed git code wapiti yarn npm|setup_dev_tools"
+    "Admin Utilities|is_installed bat btop cmake dust eza gdu htop jq nvim nano rg unzip wget zsh ffmpeg lsof 7z unrar convert inotifywait|bat btop cmake dust eza gdu htop jq neovim nano ripgrep unzip wget zsh ffmpeg lsof p7zip unrar imagemagick inotify-tools"
+    "User Tools|is_installed discord pavucontrol remmina qbittorrent steam via vlc chromium miru mpv|install_packages discord pavucontrol remmina qbittorrent steam via-bin vlc chromium miru-bin mpv"
+    "Fonts|is_fonts_ok|setup_fonts"
+    "LunarVim|is_installed lvim|setup_lvim"
+    "Setup GTK theme|symlink_exists $HOME/.config/gtk-3.0/settings.ini|setup_gtk"
+    "Picom|symlink_exists $HOME/.config/picom.conf|setup_picom"
+    "Alacritty|symlink_exists $HOME/.config/alacritty/alacritty.toml|setup_alacritty"
+    "Polybar|symlink_exists $HOME/.config/polybar/config.ini|setup_polybar"
+    "Feh|is_feh_ok|setup_feh"
+    "zsh|symlink_exists $HOME/.zshrc|setup_zsh"
+    "Starship Prompt|is_installed starship|curl -sS https://starship.rs/install.sh | sh"
+    "Setup Camera|is_installed v4l2loopback-dkms|setup_camera"
+    "Setup Keyboard|is_keyboard_ok|setup_keyboard"
+    "Mount Windows partitions|is_windows_ok|setup_windows"
 )
 if [[ "$XDG_CURRENT_DESKTOP" == "KDE" || "$XDG_CURRENT_DESKTOP" == "Plasma" ]]; then
     options+=("Setup kde theming|is_kde_theming_ok|setup_kde_theming")
     options+=("Setup autologin|is_installed sddm|setup_sddm_autologin")
     options+=("Setup konsole|symlink_exists $HOME/.config/konsolerc|setup_konsole")
 else
-    options+=("Setup i3|is_installed i3|setup_i3")
+    
+    options+=("i3 Window Manager|is_installed i3|setup_i3")
 fi
 
 menu() {
-    echo "Choose an option:"
+    echo "--------------------------------------------------"
+    echo "|                  Setup Menu                   |"
+    echo "--------------------------------------------------"
     for i in "${!options[@]}"; do
         label=$(echo "${options[$i]}" | cut -d'|' -f1)
         check_func=$(echo "${options[$i]}" | cut -d'|' -f2)
@@ -54,17 +57,17 @@ menu() {
             status="[ ]"
         fi
         
-        echo "$i) $status $label"
+        printf "| %-45s |\n" "$status $i) $label"
     done
+    echo "--------------------------------------------------"
+    echo -n "Choose an option:"
     read -r choice
-    if [[ ! "$choice" =~ ^[0-9]+$ ]] || [ "$choice" -lt 1 ] || [ "$choice" -gt "${#options[@]}" ]; then
+    if [[ ! "$choice" =~ ^[0-9]+$ ]] || [ "$choice" -lt 0 ] || [ "$choice" -gt "${#options[@]}" ]; then
         echo "Invalid choice. Please select a valid number between 1 and ${#options[@]}."
         return
     fi
     eval "${options[$choice]##*|}"
 }
-
-menu
 
 install_package() {
     if command -v yay &> /dev/null; then
@@ -287,6 +290,20 @@ setup_keyboard() {
     setxkbmap -layout us -variant intl -option
 }
 
+is_windows_ok() {
+    if command -v ntfs-3g &>/dev/null && grep -q '/dev/sda3 /mnt/windows' /proc/mounts; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
+setup_windows() {
+    install_package ntfs-3g
+    sudo mkdir -p /mnt/windows
+    sudo mount -t ntfs-3g /dev/sda3 /mnt/windows
+}
+
 is_installed() {
     for pkg in "$@"; do
         if ! command -v "$pkg" &>/dev/null; then
@@ -307,3 +324,21 @@ symlink_exists() {
         fi
     done
 }
+
+cat <<'EOF'
+ _     __  __ _
+| |__ |  \/  (_) __ _
+| '_ \| |\/| | |/ _` |
+| |_) | |  | | | (_| |
+|_.__/|_|  |_|_|\__, |
+                   |_|
+         _       _    __ _ _
+      __| | ___ | |_ / _(_) | ___  ___
+     / _` |/ _ \| __| |_| | |/ _ \/ __|
+    | (_| | (_) | |_|  _| | |  __/\__ \
+   (_)__,_|\___/ \__|_| |_|_|\___||___/
+EOF
+
+while true; do
+    menu
+done
