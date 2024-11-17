@@ -1,12 +1,12 @@
 #!/bin/zsh
-mkdir -p ~/g
-mkdir -p ~/p
-mkdir -p ~/dev
-mkdir -p ~/src
-mkdir -p ~/tmp
-mkdir -p ~/assets
+mkdir -p $HOME/g
+mkdir -p $HOME/p
+mkdir -p $HOME/dev
+mkdir -p $HOME/src
+mkdir -p $HOME/tmp
+mkdir -p $HOME/assets
 
-DOTFILES=~/dotfiles
+DOTFILES=$HOME/dotfiles
 
 if [ -z "$DOTFILES" ]; then
     echo "Error: DOTFILES variable is not set."
@@ -23,8 +23,8 @@ install_package() {
 
 setup_yay() {
     sudo pacman -S --needed git base-devel
-    git clone https://aur.archlinux.org/yay.git ~/tmp/yay
-    cd ~/tmp/yay
+    git clone https://aur.archlinux.org/yay.git $HOME/tmp/yay
+    cd $HOME/tmp/yay
     makepkg -si
     echo "✅ Yay installed"
 }
@@ -32,7 +32,7 @@ setup_yay() {
 setup_sddm_autologin() {
 
     current_user=$(whoami)
-    sudo tee -a ~/tmp/sddm.conf > /dev/null <<EOL
+    sudo tee -a $HOME/tmp/sddm.conf > /dev/null <<EOL
 [Autologin]
 User=$current_user
 Session=plasma
@@ -57,9 +57,9 @@ setup_dev_tools() {
     code --install-extension catppuccin.catppuccin-vsc catppuccin.catppuccin-vsc-icons eamodio.gitlens ms-dotnettools.csdevkit
     
     # cfg dotnet
-    wget https://dot.net/v1/dotnet-install.sh -O ~/tmp/dotnet-install.sh
-    chmod +x ~/tmp/dotnet-install.sh
-    ~/tmp/dotnet-install.sh --channel 9.0
+    wget https://dot.net/v1/dotnet-install.sh -O $HOME/tmp/dotnet-install.sh
+    chmod +x $HOME/tmp/dotnet-install.sh
+    $HOME/tmp/dotnet-install.sh --channel 9.0
 
     # cfg git
     # git clone https://github.com/bMiquelin/dotfiles
@@ -82,30 +82,31 @@ setup_user_tools() {
 }
 
 setup_bin() { 
-    mkdir -p ~/.local/bin/pass
-    ln -sf $DOTFILES/bin/pass.sh ~/.local/bin/pass
-    chmod +x $DOTFILES/bin/pass.sh
-    ln -sf $DOTFILES/bin/watch_cfg.sh ~/.local/bin/watch_cfg
-    chmod +x $DOTFILES/bin/watch_cfg.sh    
-    echo "✅ Script OK, get encrypted pass file"
+    for script in $DOTFILES/bin/*.sh; do
+        script_name=$(basename "$script" .sh)
+        ln -sf "$script" $HOME/.local/bin/"$script_name"
+        chmod +x "$script"
+        echo "$script_name mapped to $HOME/.local/bin"
+    done
+    echo "✅ Script from dotfiles/bin linked to $HOME/.local/bin"
 }
 
 setup_zsh() { 
     install_package zsh
     chsh -s $(which zsh)
-    ln -sf $DOTFILES/zsh/.zshrc ~/.zshrc
-    source ~/.zshrc
+    ln -sf $DOTFILES/zsh/.zshrc $HOME/.zshrc
+    source $HOME/.zshrc
     echo "✅ Zsh installed"
 }
 
 setup_fonts() { 
-    if ls ~/.local/share/fonts/Hack* 1> /dev/null 2>&1; then
+    if ls $HOME/.local/share/fonts/Hack* 1> /dev/null 2>&1; then
         echo "Fonts are already installed"
     fi
-    install_package noto-fonts-cjk
-    font_dir=~/tmp/Hack.zip
+    install_package noto-fonts-cjk noto-fonts-emoji
+    font_dir=$HOME/tmp/Hack.zip
     wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.zip -O $font_dir
-    unzip $font_dir '*.ttf' -d ~/.local/share/fonts/
+    unzip $font_dir '*.ttf' -d $HOME/.local/share/fonts/
     rm $font_dir
     sudo cp $DOTFILES/fonts/local.conf /etc/fonts/local.conf
     fc-cache -f -v
@@ -115,39 +116,80 @@ setup_fonts() {
 setup_lvim() {
     #install_package python-nvim
     LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)
-    ln -sf $DOTFILES/lvim/config.lua ~/.config/lvim/config.lua
+    ln -sf $DOTFILES/lvim/config.lua $HOME/.config/lvim/config.lua
 }
 
 setup_kde_theming() { 
     # OS Theme
-    cd ~/tmp
+    cd $HOME/tmp
     git clone --depth=1 https://github.com/catppuccin/kde catppuccin-kde
     cd catppuccin-kde
     ./install.sh
 
     # Konsole Theme
-    cd ~/.local/share/konsole && wget https://raw.githubusercontent.com/catppuccin/konsole/refs/heads/main/themes/catppuccin-mocha.colorscheme
+    cd $HOME/.local/share/konsole && wget https://raw.githubusercontent.com/catppuccin/konsole/refs/heads/main/themes/catppuccin-mocha.colorscheme
 
     # Icon Theme
-    cd ~/.local/share/icons
+    cd $HOME/.local/share/icons
     git clone https://github.com/m4thewz/dracula-icons
-    echo "Check ~/.config/kdeglobals for icon config"
+    echo "Check $HOME/.config/kdeglobals for icon config"
 
     # Window Decorations
     echo "Window Decorations -> Pick Scratchy"
 }
 
+setup_picom() { 
+    install_package picom
+    mkdir -p $HOME/.config/picom 
+    ln -sf $DOTFILES/picom/picom.conf $HOME/.config/picom.conf
+    echo "✅ Picom installed"
+}
+
+setup_alacritty() {
+    install_package alacritty
+    mkdir -p $HOME/.config/alacritty
+    curl -LO --output-dir ~/.config/alacritty https://github.com/catppuccin/alacritty/raw/main/catppuccin-mocha.toml
+    ln -sf $DOTFILES/alacritty/alacritty.toml $HOME/.config/alacritty/alacritty.toml
+    echo "✅ Alacritty installed"
+}
+
+setup_polybar() {
+    install_package polybar
+    mkdir -p $HOME/.config/polybar
+    ln -sf $DOTFILES/polybar/config.ini $HOME/.config/polybar/config.ini
+    echo "✅ Polybar installed"
+}
+
+setup_feh() {
+    install_package feh
+    feh --bg-fill $DOTFILES/wallpaper/wallpaper1.jpg
+    echo "✅ Feh installed"
+}
+
+setup_gtk() {
+    yay -S catppuccin-gtk-theme-mocha
+    mkdir -p $HOME/.config/gtk-3.0
+    ln -sf $DOTFILES/gtk/settings.ini $HOME/.config/gtk-3.0/settings.ini
+    echo "✅ GTK installed"
+}
+
 setup_i3() {
-    install_package i3 dmenu polybar picom alacritty dunst feh
-    mkdir -p ~/.config/i3
-    ln -sf $DOTFILES/i3/config ~/.config/i3/config
+    install_package i3 dmenu dunst thunar
+    mkdir -p $HOME/.config/i3
+    ln -sf $DOTFILES/i3/config $HOME/.config/i3/config
+    
+    setup_picom
+    setup_alacritty
+    setup_polybar
+    setup_feh
+
     echo "✅ i3 installed"
 }
 
 setup_konsole() { 
-    cd ~/.local/share/konsole && wget https://raw.githubusercontent.com/catppuccin/konsole/refs/heads/main/themes/catppuccin-mocha.colorscheme
-    ln -sf $DOTFILES/konsole/konsolerc ~/.config/konsolerc
-    ln -sf $DOTFILES/konsole/zsh.profile ~/.local/share/konsole/zsh.profile
+    cd $HOME/.local/share/konsole && wget https://raw.githubusercontent.com/catppuccin/konsole/refs/heads/main/themes/catppuccin-mocha.colorscheme
+    ln -sf $DOTFILES/konsole/konsolerc $HOME/.config/konsolerc
+    ln -sf $DOTFILES/konsole/zsh.profile $HOME/.local/share/konsole/zsh.profile
     echo "✅ Konsole installed"
 }
 
@@ -162,8 +204,20 @@ setup_camera() {
 
 setup_keyboard() { 
     setxkbmap -layout us -variant intl -option
-    echo "Check /usr/share/X11/xkb/symbols/us, Line 129, inside intl block, at ACC11"
-    echo "key <AC11> { [dead_acute, quotedbl, apostrophe ] };"
+
+    echo "Fixing xkb symbols file to remove dead_diaeresis from us-intl"
+    file="/usr/share/X11/xkb/symbols/us"
+    line_number=129
+    new_line='key <AC11> { [ dead_acute, quotedbl, apostrophe ] };'
+    current_line=$(sed -n "${line_number}p" "$file")
+
+    # If the current line doesn't match the desired one, update it
+    if [[ "$current_line" != "$new_line" ]]; then
+        sudo sed -i "${line_number}s/.*/$new_line/" "$file"
+        echo "Line $line_number updated successfully."
+    else
+        echo "Line $line_number is already correct."
+    fi
 }
 
 

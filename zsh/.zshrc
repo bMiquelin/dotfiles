@@ -17,12 +17,21 @@ export EDITOR='lvim'
 export VISUAL='lvim'
 export DOTFILES=$HOME/dotfiles
 
-alias backup='sudo timeshift --create --tags D'
+
+alias lastss="ls -d ~/Pictures/Screenshots/* -Art | tail -n 1"
+alias editss="gimp (ls -d ~/Pictures/Screenshots/* -Art | tail -n 1) &"
+alias ss="ffmpeg -f x11grab -video_size 1920x1080 -i $display -vframes 1 ~/ss/ss.png"
+alias c_dunst='v $DOTFILES/dunst/dunstrc'
+alias c_poly='v $DOTFILES/polybar/config.ini'
+alias c_alacritty="v $DOTFILES/alacritty/alacritty.toml"
 alias i3c='lvim $DOTFILES/i3/config'
+alias backup='sudo timeshift --create --tags D'
 alias l='eza -al --group-directories-first'
 alias ll='eza -al --group-directories-first'
 alias ..='cdls ..'
-alias rgf='rg --files'
+alias h='cdls $HOME'
+alias rgf='rg --files | rg'
+alias rgc="rg -v '^[# \\t]' | rg -v '^\\s*\$'"
 alias start='xdg-open'
 alias vi='lvim'
 alias v='lvim'

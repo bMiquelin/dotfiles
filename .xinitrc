@@ -1,7 +1,7 @@
-setxkbmap -model abnt2 -layout br
+setxkbmap -layout us -variant intl -option
 $HOME/.screenlayout/display.sh
-xsetroot -cursor_name left_ptr
-feh --bg-scale ~/Wallpapers/neoncity.png
-$HOME/.config/polybar/launch.sh
+# xsetroot -cursor_name left_ptr
+feh --bg-fill $DOTFILES/wallpaper/wallpaper1.jpg
+$HOME/dotfiles/polybar/launch.sh
 picom -f &
-exec bspwm
+exec i3
