@@ -54,7 +54,7 @@ setup_dev_tools() {
     install_package git docker rust visual-studio-code-bin wapiti yarn npm python-pip openssh
 
     # cfg vs-code
-    code --install-extension catppuccin.catppuccin-vsc catppuccin.catppuccin-vsc-icons eamodio.gitlens ms-dotnettools.csdevkit
+    code --install-extension catppuccin.catppuccin-vsc catppuccin.catppuccin-vsc-icons eamodio.gitlens ms-dotnettools.csdevkit GitHub.copilot shakram02.bash-beautify
     
     # cfg dotnet
     wget https://dot.net/v1/dotnet-install.sh -O $HOME/tmp/dotnet-install.sh
@@ -203,8 +203,6 @@ setup_camera() {
 }
 
 setup_keyboard() { 
-    setxkbmap -layout us -variant intl -option
-
     echo "Fixing xkb symbols file to remove dead_diaeresis from us-intl"
     file="/usr/share/X11/xkb/symbols/us"
     line_number=129
@@ -215,9 +213,11 @@ setup_keyboard() {
     if [[ "$current_line" != "$new_line" ]]; then
         sudo sed -i "${line_number}s/.*/$new_line/" "$file"
         echo "Line $line_number updated successfully."
-    else
+            else
         echo "Line $line_number is already correct."
     fi
+
+    setxkbmap -layout us -variant intl -option
 }
 
 

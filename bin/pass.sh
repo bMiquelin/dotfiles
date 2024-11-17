@@ -15,8 +15,8 @@ if ! unzip -P "$password" "$ZIP_PATH" -d /tmp/; then
   handle_error "Failed to unzip the file. Check the password or file location."
 fi
 # Open file with vi
-if ! vim "$TXT_PATH"; then
-  handle_error "Failed to open the file with vi."
+if ! nvim "$TXT_PATH"; then
+  handle_error "Failed to open the file with nvim."
 fi
 # Re-zip the file with a password
 if ! 7z a -p"$password" "$ZIP_PATH" "$TXT_PATH"; then

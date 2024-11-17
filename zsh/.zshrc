@@ -33,6 +33,7 @@ alias h='cdls $HOME'
 alias rgf='rg --files | rg'
 alias rgc="rg -v '^[# \\t]' | rg -v '^\\s*\$'"
 alias start='xdg-open'
+alias vim='lvim'
 alias vi='lvim'
 alias v='lvim'
 alias lsl='eza -l'
