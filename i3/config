@@ -2,7 +2,7 @@
 # doc: https://i3wm.org/docs/userguide.html
 
 set $mod Mod4
-
+workspace 10 output DP-5
 font pango:Hack 12
 
 exec --no-startup-id dex --autostart --environment i3

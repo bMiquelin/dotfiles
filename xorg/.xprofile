@@ -1,0 +1,13 @@
+export EDITOR=nvim
+export BROWSER=chromium
+export TERMINAL=alacritty
+export DOTFILES=$HOME/dotfiles
+export XCOMPOSEFILE=$DOTFILES/xorg/.xcompose
+export ENV_FILE_GTK_LINE='GTK_IM_MODULE=cedilla'
+export ENV_FILE_QT_LINE='QT_IM_MODULE=cedilla'
+
+setxkbmap -layout us -variant intl
+$DOTFILES/polybar/launch.sh
+$DOTFILES/xorg/display.sh
+picom &
+feh --bg-fill $DOTFILES/wallpaper/wallpaper1.jpg

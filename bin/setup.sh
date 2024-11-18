@@ -18,7 +18,7 @@ options=(
     "Custom Scripts|check_setup_bin|setup_bin"
     "Fun Tools|is_installed asciiquarium lolcat neofetch nsnake cmatrix fortune cowsay|install_package asciiquarium lolcat neofetch nsnake cmatrix fortune-mod cowsay"
     "Development Tools|is_installed git code wapiti yarn npm|setup_dev_tools"
-    "Admin Utilities|is_installed bat btop cmake dust eza gdu htop jq nvim nano rg unzip wget zsh ffmpeg lsof 7z unrar convert inotifywait|install_package bat btop cmake dust eza gdu htop jq neovim nano ripgrep unzip wget zsh ffmpeg lsof p7zip unrar imagemagick inotify-tools"
+    "Admin Utilities|is_installed bat btop cmake dust eza gdu htop jq nvim nano rg unzip wget zsh ffmpeg lsof 7z unrar convert inotifywait|install_package bat btop cmake dust eza gdu htop jq neovim nano ripgrep unzip wget zsh ffmpeg lsof p7zip unrar imagemagick inotify-tools timeshift"
     "User Tools|is_installed discord pavucontrol remmina qbittorrent steam via vlc chromium mpv|install_package discord pavucontrol remmina qbittorrent steam via-bin vlc chromium mpv"
     "Fonts|is_fonts_ok|setup_fonts"
     "LunarVim|is_installed lvim|setup_lvim"
@@ -147,7 +147,7 @@ setup_bin() {
 
 setup_zsh() { 
     install_package zsh
-    chsh -s $(which zsh)
+    #chsh -s $(which zsh)
     ln -sf $DOTFILES/zsh/.zshrc $HOME/.zshrc
     zsh
     source $HOME/.zshrc
@@ -232,7 +232,8 @@ setup_polybar() {
 }
 
 is_feh_ok() {
-    if command -v feh &>/dev/null && grep -q '^feh' $HOME/.xinitrc; then
+    # && grep -q '^feh' $HOME/.xinitrc
+    if command -v feh &>/dev/null; then
         echo 1
     else
         echo 0
@@ -243,10 +244,10 @@ setup_feh() {
     install_package feh
     wallpaper_cmd="feh --bg-fill $DOTFILES/wallpaper/wallpaper1.jpg"
     $wallpaper_cmd
-    if ! grep -Fxq "$wallpaper_cmd" $HOME/.xinitrc; then
-        sed -i "\$i $wallpaper_cmd" $HOME/.xinitrc
-        echo "Wallpaper command added to .xinitrc"
-    fi
+    # if ! grep -Fxq "$wallpaper_cmd" $HOME/.xinitrc; then
+    #     sed -i "\$i $wallpaper_cmd" $HOME/.xinitrc
+    #     echo "Wallpaper command added to .xinitrc"
+    # fi
     echo "✅ Feh installed"
 }
 
@@ -260,7 +261,12 @@ setup_gtk() {
 setup_i3() {
     install_package i3 dmenu dunst thunar
     mkdir -p $HOME/.config/i3
+    echo "Symlinking i3 config"
     ln -sf $DOTFILES/i3/config $HOME/.config/i3/config
+    echo "Symlinking .xprofile"
+    ln -sf $DOTFILES/xorg/.xprofile $HOME/.xprofile
+    chmod +x $DOTFILES/polybar/launch.sh
+    chmod +x $DOTFILES/xorg/display.sh
 }
 
 setup_konsole() { 
@@ -303,6 +309,15 @@ setup_keyboard() {
     else
         echo "Line $line_number is already correct."
     fi
+
+    # TODO: /usr/share/X11/locale/en_US.UTF-8/Compose
+    # Replace ć with ç and Ć with Ç
+
+    echg "Fixing compose file to replace c with ç"
+    compose_file="/usr/share/X11/locale/en_US.UTF-8/Compose"
+    sudo sed -i 's/ć/ç/g' "$compose_file"
+    sudo sed -i 's/Ć/Ç/g' "$compose_file"
+
     setxkbmap -layout us -variant intl -option
 }
 
