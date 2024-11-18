@@ -310,9 +310,8 @@ setup_keyboard() {
         echo "Line $line_number is already correct."
     fi
 
-    # TODO: /usr/share/X11/locale/en_US.UTF-8/Compose
-    # Replace ć with ç and Ć with Ç
-
+    # https://askubuntu.com/a/1371391
+    # Also replace /usr/lib/gtk-3.0/3.0.0/immodules.cache "wa" to "en"
     echg "Fixing compose file to replace c with ç"
     compose_file="/usr/share/X11/locale/en_US.UTF-8/Compose"
     sudo sed -i 's/ć/ç/g' "$compose_file"
