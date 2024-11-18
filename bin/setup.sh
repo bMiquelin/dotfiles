@@ -18,8 +18,8 @@ options=(
     "Custom Scripts|check_setup_bin|setup_bin"
     "Fun Tools|is_installed asciiquarium lolcat neofetch nsnake cmatrix fortune cowsay|install_package asciiquarium lolcat neofetch nsnake cmatrix fortune-mod cowsay"
     "Development Tools|is_installed git code wapiti yarn npm|setup_dev_tools"
-    "Admin Utilities|is_installed bat btop cmake dust eza gdu htop jq nvim nano rg unzip wget zsh ffmpeg lsof 7z unrar convert inotifywait|bat btop cmake dust eza gdu htop jq neovim nano ripgrep unzip wget zsh ffmpeg lsof p7zip unrar imagemagick inotify-tools"
-    "User Tools|is_installed discord pavucontrol remmina qbittorrent steam via vlc chromium miru mpv|install_packages discord pavucontrol remmina qbittorrent steam via-bin vlc chromium miru-bin mpv"
+    "Admin Utilities|is_installed bat btop cmake dust eza gdu htop jq nvim nano rg unzip wget zsh ffmpeg lsof 7z unrar convert inotifywait|install_package bat btop cmake dust eza gdu htop jq neovim nano ripgrep unzip wget zsh ffmpeg lsof p7zip unrar imagemagick inotify-tools"
+    "User Tools|is_installed discord pavucontrol remmina qbittorrent steam via vlc chromium mpv|install_package discord pavucontrol remmina qbittorrent steam via-bin vlc chromium mpv"
     "Fonts|is_fonts_ok|setup_fonts"
     "LunarVim|is_installed lvim|setup_lvim"
     "Setup GTK theme|symlink_exists $HOME/.config/gtk-3.0/settings.ini|setup_gtk"
@@ -28,7 +28,7 @@ options=(
     "Polybar|symlink_exists $HOME/.config/polybar/config.ini|setup_polybar"
     "Feh|is_feh_ok|setup_feh"
     "zsh|symlink_exists $HOME/.zshrc|setup_zsh"
-    "Starship Prompt|is_installed starship|curl -sS https://starship.rs/install.sh | sh"
+    "Starship Prompt|is_installed starship|setup_starship"
     "Setup Camera|is_installed v4l2loopback-dkms|setup_camera"
     "Setup Keyboard|is_keyboard_ok|setup_keyboard"
     "Mount Windows partitions|is_windows_ok|setup_windows"
@@ -39,7 +39,7 @@ if [[ "$XDG_CURRENT_DESKTOP" == "KDE" || "$XDG_CURRENT_DESKTOP" == "Plasma" ]]; 
     options+=("Setup konsole|symlink_exists $HOME/.config/konsolerc|setup_konsole")
 else
     
-    options+=("i3 Window Manager|is_installed i3|setup_i3")
+    options+=("i3 Window Manager|is_installed i3 dmenu dunst thunar|setup_i3")
 fi
 
 menu() {
@@ -77,6 +77,10 @@ install_package() {
     fi
 }
 
+setup_starship() {
+    curl -sS https://starship.rs/install.sh | sh
+}
+
 setup_yay() {
     sudo pacman -S --needed git base-devel
     git clone https://aur.archlinux.org/yay.git $HOME/tmp/yay
@@ -101,7 +105,13 @@ EOL
 
 setup_dev_tools() { 
     install_package git docker rust visual-studio-code-bin wapiti yarn npm python-pip openssh
-    code --install-extension catppuccin.catppuccin-vsc catppuccin.catppuccin-vsc-icons eamodio.gitlens ms-dotnettools.csdevkit GitHub.copilot shakram02.bash-beautify
+    code --install-extension catppuccin.catppuccin-vsc
+    code --install-extension catppuccin.catppuccin-vsc-icons
+    code --install-extension eamodio.gitlens
+    code --install-extension ms-dotnettools.csdevkit
+    code --install-extension GitHub.copilot
+    code --install-extension shakram02.bash-beautify
+    
     wget https://dot.net/v1/dotnet-install.sh -O $HOME/tmp/dotnet-install.sh
     chmod +x $HOME/tmp/dotnet-install.sh
     $HOME/tmp/dotnet-install.sh --channel 9.0
@@ -124,6 +134,7 @@ check_setup_bin() {
 }
 
 setup_bin() { 
+    mkdir -p $HOME/.local/bin/
     for script in $DOTFILES/bin/*.sh; do
         script_name=$(basename "$script" .sh)
         if [ ! -f "$HOME/.local/bin/$script_name" ]; then
@@ -150,6 +161,7 @@ setup_fonts() {
     install_package noto-fonts-cjk noto-fonts-emoji
     font_dir=$HOME/tmp/Hack.zip
     wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hack.zip -O $font_dir
+    mkdir -p $HOME/.local/share/fonts
     unzip $font_dir '*.ttf' -d $HOME/.local/share/fonts/
     rm $font_dir
     sudo cp $DOTFILES/fonts/local.conf /etc/fonts/local.conf
@@ -268,7 +280,11 @@ setup_camera() {
 }
 
 is_keyboard_ok() {
-    if grep -q 'dead_diaeresis' /usr/share/X11/xkb/symbols/us; then
+    file="/usr/share/X11/xkb/symbols/us"
+    line_number=129
+    new_line='key <AC11> { [ dead_acute, quotedbl, apostrophe ] };'
+    current_line=$(sed -n "${line_number}p" "$file")
+    if [[ "$current_line" != "$new_line" ]]; then
         echo 0
     else
         echo 1
@@ -276,12 +292,12 @@ is_keyboard_ok() {
 }
 
 setup_keyboard() { 
-    echo "Fixing xkb symbols file to remove dead_diaeresis from us-intl"
     file="/usr/share/X11/xkb/symbols/us"
     line_number=129
     new_line='key <AC11> { [ dead_acute, quotedbl, apostrophe ] };'
     current_line=$(sed -n "${line_number}p" "$file")
     if [[ "$current_line" != "$new_line" ]]; then
+        echo "Fixing xkb symbols file to remove dead_diaeresis from us-intl"
         sudo sed -i "${line_number}s/.*/$new_line/" "$file"
         echo "Line $line_number updated successfully."
     else
