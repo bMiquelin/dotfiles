@@ -16,10 +16,10 @@ fi
 options=(
     "AUR Helper (yay)|is_installed yay|setup_yay"
     "Custom Scripts|check_setup_bin|setup_bin"
-    "Fun Tools|is_installed asciiquarium lolcat neofetch nsnake cmatrix fortune cowsay|install_package asciiquarium lolcat neofetch nsnake cmatrix fortune-mod cowsay"
+    "Fun Tools|is_installed asciiquarium lolcat neofetch nsnake cmatrix fortune cowsay figlet|install_package asciiquarium lolcat neofetch nsnake cmatrix fortune-mod cowsay figlet"
     "Development Tools|is_installed git code wapiti yarn npm|setup_dev_tools"
     "Admin Utilities|is_installed bat btop cmake dust eza gdu htop jq nvim nano rg unzip wget zsh ffmpeg lsof 7z unrar convert inotifywait|install_package bat btop cmake dust eza gdu htop jq neovim nano ripgrep unzip wget zsh ffmpeg lsof p7zip unrar imagemagick inotify-tools timeshift"
-    "User Tools|is_installed discord pavucontrol remmina qbittorrent steam via vlc chromium mpv|install_package discord pavucontrol remmina qbittorrent steam via-bin vlc chromium mpv"
+    "User Tools|is_installed discord pavucontrol remmina qbittorrent steam via vlc chromium mpv|install_package discord pavucontrol remmina qbittorrent steam via-bin vlc chromium mpv gimp pinta flameshot"
     "Fonts|is_fonts_ok|setup_fonts"
     "LunarVim|is_installed lvim|setup_lvim"
     "Setup GTK theme|symlink_exists $HOME/.config/gtk-3.0/settings.ini|setup_gtk"
@@ -32,13 +32,13 @@ options=(
     "Setup Camera|is_installed v4l2loopback-dkms|setup_camera"
     "Setup Keyboard|is_keyboard_ok|setup_keyboard"
     "Mount Windows partitions|is_windows_ok|setup_windows"
+    "Setup Dunst|symlink_exists $HOME/.config/dunst/dunstrc|setup_dunst"
 )
 if [[ "$XDG_CURRENT_DESKTOP" == "KDE" || "$XDG_CURRENT_DESKTOP" == "Plasma" ]]; then
     options+=("Setup kde theming|is_kde_theming_ok|setup_kde_theming")
     options+=("Setup autologin|is_installed sddm|setup_sddm_autologin")
     options+=("Setup konsole|symlink_exists $HOME/.config/konsolerc|setup_konsole")
 else
-    
     options+=("i3 Window Manager|is_installed i3 dmenu dunst thunar|setup_i3")
 fi
 
@@ -256,6 +256,13 @@ setup_gtk() {
     mkdir -p $HOME/.config/gtk-3.0
     ln -sf $DOTFILES/gtk/settings.ini $HOME/.config/gtk-3.0/settings.ini
     echo "✅ GTK installed"
+}
+
+setup_dunst() {
+    install_package dunst
+    mkdir -p $HOME/.config/dunst
+    ln -sf $DOTFILES/dunst/dunstrc $HOME/.config/dunst/dunstrc
+    echo "✅ Dunst installed"
 }
 
 setup_i3() {

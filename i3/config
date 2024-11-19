@@ -2,14 +2,17 @@
 # doc: https://i3wm.org/docs/userguide.html
 
 set $mod Mod4
-workspace 10 output DP-5
 font pango:Hack 12
 
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
+exec --no-startup-id i3-msg 'workspace 1; exec i3-sensible-terminal;'
+exec --no-startup-id i3-msg 'workspace 10; exec chromium https://web.whatsapp.com; exec discord; workspace 1;'
+
 
 for_window [class=".*"] border none
+workspace 10 output DP-5
 
 # AUDIO
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -23,6 +26,8 @@ floating_modifier $mod
 tiling_drag modifier titlebar
 
 # BINDINGS
+bindsym $mod+Shift+s exec --no-startup-id flameshot gui
+
 bindsym $mod+s layout stacking
 bindsym $mod+t layout tabbed
 bindsym $mod+y layout toggle split
@@ -32,7 +37,8 @@ bindsym $mod+v split v
 bindsym $mod+e exec thunar
 bindsym $mod+w exec chromium
 bindsym $mod+d exec rofi -show run
-bindsym $mod+r exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+r exec --no-startup-id env PATH=$HOME/.local/bin:$PATH dmenu_run -f -i -l 5
+
 
 bindsym $mod+Return exec i3-sensible-terminal
 bindsym Mod1+Return fullscreen toggle

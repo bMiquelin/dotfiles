@@ -1,0 +1,25 @@
+[global]
+frame_color = "#8aadf4"
+separator_color= frame
+font = "Hack 10"
+transparency = 40
+# format = "%s %p\n%b"
+frame_width = 2
+icon_position = left
+
+[skip-rule] 
+body="*Miru version*"
+skip_display=true
+
+[urgency_low]
+background = "#24273a"
+foreground = "#cad3f5"
+
+[urgency_normal]
+background = "#24273a"
+foreground = "#cad3f5"
+
+[urgency_critical]
+background = "#24273a"
+foreground = "#cad3f5"
+frame_color = "#f5a97f"

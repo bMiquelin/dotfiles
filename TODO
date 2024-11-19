@@ -3,9 +3,11 @@
 - [X] setup.sh to work as .sh instead of .zshrc
 - [X] setup.sh must be a dynamic menu
 - [X] Install and configure picom
-- [ ] Set up notify-send for notifications
-- [ ] Integrate dmenu for application launching
+- [X] Set up notify-send for notifications
+- [X] Integrate dmenu for application launching
 - [X] Configure xrandr for display settings
 - [X] Configure menu to run and check what has already been done
-- [ ] Set decent us-intl layout that works outside gtk/qt
-- [ ] Set 
+- [X] Set decent us-intl layout that works outside gtk/qt
+
+- [X] Set flameshot or alternative
+- [X] Boot sound fx
