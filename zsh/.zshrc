@@ -52,3 +52,5 @@ bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 
 neofetch
+setopt no_notify
+($DOTFILES/bin/check.sh &)
