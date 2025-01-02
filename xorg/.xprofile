@@ -12,3 +12,4 @@ $DOTFILES/xorg/display.sh
 picom &
 feh --bg-fill $DOTFILES/wallpaper/wallpaper1.jpg
 paplay $DOTFILES/sounds/boot.mp3 &
+watch_cfg & disown

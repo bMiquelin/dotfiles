@@ -11,6 +11,18 @@ icon_position = left
 body="*Miru version*"
 skip_display=true
 
+[skip-rule] 
+body="*You have unseen notifications*"
+skip_display=true
+
+[rule] 
+summary = "*Instagram"
+timeout = 1
+
+[rule] 
+summary = "Watcher"
+timeout = 1
+
 [urgency_low]
 background = "#24273a"
 foreground = "#cad3f5"

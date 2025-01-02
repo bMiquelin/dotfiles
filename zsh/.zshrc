@@ -19,6 +19,11 @@ export DOTFILES=$HOME/dotfiles
 export WIN=/mnt/windows
 export WINBAK=/mnt/windows/bak
 
+awk2() {
+  awk '{print $2}'
+}
+
+
 alias lastss="ls -d ~/Pictures/Screenshots/* -Art | tail -n 1"
 alias editss="gimp (ls -d ~/Pictures/Screenshots/* -Art | tail -n 1) &"
 alias ss="ffmpeg -f x11grab -video_size 1920x1080 -i $display -vframes 1 ~/ss/ss.png"
@@ -31,8 +36,9 @@ alias l='eza -al --group-directories-first'
 alias ll='eza -al --group-directories-first'
 alias ..='cdls ..'
 alias h='cdls $HOME'
-alias rgf='rg --files | rg'
+alias rgf='rg --files | rg -i'
 alias rgc="rg -v '^[# \\t]' | rg -v '^\\s*\$'"
+alias rg='rg -i'
 alias start='xdg-open'
 alias vim='lvim'
 alias vi='lvim'
@@ -51,6 +57,9 @@ bindkey  "^[[3~"  delete-char
 bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 
+source /usr/share/nvm/init-nvm.sh
+
 neofetch
 setopt no_notify
 ($DOTFILES/bin/check.sh &)
+fortune | cowsay
